@@ -1,0 +1,14 @@
+.DS_Store
+*.log
+
+.venv/
+node_modules/
+vendor/
+
+tmp/
+exports/
+
+backend/likeadmin_php/docker/mysql/
+backend/likeadmin_php/docker/redis/
+backend/likeadmin_php/server/runtime/
+

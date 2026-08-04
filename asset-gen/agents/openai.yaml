@@ -1,0 +1,4 @@
+interface:
+  display_name: "Asset Gen"
+  short_description: "Generate and clean game-ready static assets"
+  default_prompt: "Use $asset-gen to generate a transparent game UI or character asset."
