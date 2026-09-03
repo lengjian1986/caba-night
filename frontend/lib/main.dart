@@ -214,11 +214,7 @@ void _openProtectedPage(BuildContext context, Widget page) {
     PageRouteBuilder<void>(
       transitionDuration: Duration.zero,
       reverseTransitionDuration: Duration.zero,
-      pageBuilder: (loginContext, _, _) => LoginPage(
-        onLoginSuccess: () {
-          Navigator.of(loginContext).pushReplacement(route());
-        },
-      ),
+      pageBuilder: (_, _, _) => const LoginPage(),
     ),
   );
 }
@@ -238,11 +234,7 @@ Future<void> _openProtectedSubPage(BuildContext context, Widget page) {
     PageRouteBuilder<void>(
       transitionDuration: Duration.zero,
       reverseTransitionDuration: Duration.zero,
-      pageBuilder: (loginContext, _, _) => LoginPage(
-        onLoginSuccess: () {
-          Navigator.of(loginContext).pushReplacement(route());
-        },
-      ),
+      pageBuilder: (_, _, _) => const LoginPage(),
     ),
   );
 }
@@ -829,9 +821,7 @@ class _FavoriteShopsPageState extends State<FavoriteShopsPage> {
 }
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, this.onLoginSuccess});
-
-  final VoidCallback? onLoginSuccess;
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -872,18 +862,14 @@ class _LoginPageState extends State<LoginPage> {
       );
       await AppSession.authenticate(token);
       if (!mounted) return;
-      if (widget.onLoginSuccess != null) {
-        widget.onLoginSuccess!();
-      } else {
-        Navigator.of(context).pushAndRemoveUntil(
-          PageRouteBuilder<void>(
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
-            pageBuilder: (_, _, _) => HomePage(api: HomeApi()),
-          ),
-          (_) => false,
-        );
-      }
+      Navigator.of(context).pushAndRemoveUntil(
+        PageRouteBuilder<void>(
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+          pageBuilder: (_, _, _) => HomePage(api: HomeApi()),
+        ),
+        (_) => false,
+      );
     } catch (error) {
       if (!mounted) return;
       final message = error.toString().replaceFirst('Exception: ', '');
