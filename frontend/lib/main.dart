@@ -199,31 +199,6 @@ class AppSession {
 }
 
 void _openProtectedPage(BuildContext context, Widget page) {
-  void openPage() {
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder<void>(
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-        pageBuilder: (_, _, _) => page,
-      ),
-    );
-  }
-
-  if (AppSession.isAuthenticated) {
-    openPage();
-    return;
-  }
-
-  Navigator.of(context).push(
-    PageRouteBuilder<void>(
-      transitionDuration: Duration.zero,
-      reverseTransitionDuration: Duration.zero,
-      pageBuilder: (_, _, _) => LoginPage(onLoginSuccess: openPage),
-    ),
-  );
-}
-
-void _openProtectedSubPage(BuildContext context, Widget page) {
   PageRouteBuilder<void> route() => PageRouteBuilder<void>(
     transitionDuration: Duration.zero,
     reverseTransitionDuration: Duration.zero,
@@ -231,7 +206,7 @@ void _openProtectedSubPage(BuildContext context, Widget page) {
   );
 
   if (AppSession.isAuthenticated) {
-    Navigator.of(context).push(route());
+    Navigator.of(context).pushReplacement(route());
     return;
   }
 
@@ -239,11 +214,50 @@ void _openProtectedSubPage(BuildContext context, Widget page) {
     PageRouteBuilder<void>(
       transitionDuration: Duration.zero,
       reverseTransitionDuration: Duration.zero,
-      pageBuilder: (_, _, _) => LoginPage(
+      pageBuilder: (loginContext, _, _) => LoginPage(
         onLoginSuccess: () {
-          Navigator.of(context).pushReplacement(route());
+          Navigator.of(loginContext).pushReplacement(route());
         },
       ),
+    ),
+  );
+}
+
+Future<void> _openProtectedSubPage(BuildContext context, Widget page) {
+  PageRouteBuilder<void> route() => PageRouteBuilder<void>(
+    transitionDuration: Duration.zero,
+    reverseTransitionDuration: Duration.zero,
+    pageBuilder: (_, _, _) => page,
+  );
+
+  if (AppSession.isAuthenticated) {
+    return Navigator.of(context).push(route());
+  }
+
+  return Navigator.of(context).push(
+    PageRouteBuilder<void>(
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+      pageBuilder: (loginContext, _, _) => LoginPage(
+        onLoginSuccess: () {
+          Navigator.of(loginContext).pushReplacement(route());
+        },
+      ),
+    ),
+  );
+}
+
+void _returnToPreviousOrLogin(BuildContext context, [Object? result]) {
+  final navigator = Navigator.of(context);
+  if (navigator.canPop()) {
+    navigator.pop(result);
+    return;
+  }
+  navigator.pushReplacement(
+    PageRouteBuilder<void>(
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+      pageBuilder: (_, _, _) => const LoginPage(),
     ),
   );
 }
@@ -527,7 +541,7 @@ Future<void> _openMemberEditPage(
   BuildContext context,
   UserProfile? profile,
 ) async {
-  _openProtectedSubPage(context, MemberEditPage(profile: profile));
+  await _openProtectedSubPage(context, MemberEditPage(profile: profile));
 }
 
 void _openPhoneVerificationPage(BuildContext context, String mobile) {
@@ -17368,7 +17382,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   child: IconButton(
                     onPressed: _saving
                         ? null
-                        : () => Navigator.of(context).pop(),
+                        : () => _returnToPreviousOrLogin(context),
                     icon: const Icon(
                       Icons.chevron_left_rounded,
                       color: Color(0xFFF1D084),
@@ -17407,7 +17421,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       child: _actionButton(
                         'キャンセル',
                         false,
-                        _saving ? null : () => Navigator.of(context).pop(),
+                        _saving
+                            ? null
+                            : () => _returnToPreviousOrLogin(context),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -17617,7 +17633,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   child: IconButton(
                     onPressed: _saving
                         ? null
-                        : () => Navigator.of(context).pop(),
+                        : () => _returnToPreviousOrLogin(context),
                     icon: const Icon(
                       Icons.chevron_left_rounded,
                       color: Color(0xFFF1D084),
@@ -17741,7 +17757,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       child: _actionButton(
                         'キャンセル',
                         false,
-                        _saving ? null : () => Navigator.of(context).pop(),
+                        _saving
+                            ? null
+                            : () => _returnToPreviousOrLogin(context),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -17958,7 +17976,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('パスワードを再設定しました')));
-        Navigator.of(context).pop(true);
+        _returnToPreviousOrLogin(context, true);
       }
     } catch (error) {
       _showMessage(error.toString().replaceFirst('Exception: ', ''));
