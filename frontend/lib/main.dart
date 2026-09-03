@@ -15065,17 +15065,15 @@ class CampaignSection extends StatelessWidget {
         children: [
           const SectionHeader(title: 'おすすめキャンペーン'),
           const SizedBox(height: 13),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              children: [
-                for (final campaign in visibleCampaigns) ...[
-                  CampaignCard(campaign: campaign),
-                  if (campaign != visibleCampaigns.last)
-                    const SizedBox(width: 10),
-                ],
-              ],
+          SizedBox(
+            height: 120,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              itemCount: visibleCampaigns.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 10),
+              itemBuilder: (context, index) =>
+                  CampaignCard(campaign: visibleCampaigns[index]),
             ),
           ),
         ],

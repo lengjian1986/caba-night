@@ -721,7 +721,7 @@ class CabakuraHomeLogic
                     'image' => self::imageUrl($image),
                 ];
 
-                if (count($plans) >= 12) {
+                if (count($plans) >= 10) {
                     return $plans;
                 }
             }
