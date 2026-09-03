@@ -15063,7 +15063,7 @@ class CampaignSection extends StatelessWidget {
       height: 166,
       child: Column(
         children: [
-          const SectionHeader(title: 'おすすめキャンペーン'),
+          const SectionHeader(title: 'おすすめキャンペーン', showSeeAll: false),
           const SizedBox(height: 13),
           SizedBox(
             height: 120,
