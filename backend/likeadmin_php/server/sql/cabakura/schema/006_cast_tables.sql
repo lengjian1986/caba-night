@@ -1,0 +1,33 @@
+SET NAMES utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `la_cbk_cast` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `shop_id` int unsigned NOT NULL DEFAULT 0 COMMENT '所属店铺ID',
+  `name` varchar(120) NOT NULL DEFAULT '' COMMENT 'Cast名',
+  `kana` varchar(120) NOT NULL DEFAULT '' COMMENT '假名',
+  `age` tinyint unsigned NOT NULL DEFAULT 0 COMMENT '年龄',
+  `height` smallint unsigned NOT NULL DEFAULT 0 COMMENT '身高cm',
+  `measurements` varchar(80) NOT NULL DEFAULT '' COMMENT '三围',
+  `preferred_male_type` varchar(255) NOT NULL DEFAULT '' COMMENT '喜欢男生类型',
+  `smoking_drinking` varchar(80) NOT NULL DEFAULT '' COMMENT '抽烟喝酒',
+  `smoking_status` varchar(40) NOT NULL DEFAULT 'unknown' COMMENT '抽烟状况',
+  `drinking_status` varchar(40) NOT NULL DEFAULT 'unknown' COMMENT '喝酒状况',
+  `profile` text COMMENT '个人简介',
+  `main_image` varchar(500) NOT NULL DEFAULT '' COMMENT '主图',
+  `gallery_images` text COMMENT '相册 JSON',
+  `tags` varchar(500) NOT NULL DEFAULT '' COMMENT '标签 JSON',
+  `attendance_status` varchar(40) NOT NULL DEFAULT 'off' COMMENT '出勤状态',
+  `review_status` varchar(40) NOT NULL DEFAULT 'draft' COMMENT '审核状态',
+  `is_new` tinyint unsigned NOT NULL DEFAULT 0 COMMENT '是否新人',
+  `is_recommended` tinyint unsigned NOT NULL DEFAULT 0 COMMENT '是否推荐',
+  `sort` int unsigned NOT NULL DEFAULT 0 COMMENT '排序',
+  `rating` decimal(3,2) NOT NULL DEFAULT 0.00 COMMENT '评分',
+  `favorite_count` int unsigned NOT NULL DEFAULT 0 COMMENT '收藏数',
+  `create_time` int unsigned NOT NULL DEFAULT 0,
+  `update_time` int unsigned NOT NULL DEFAULT 0,
+  `delete_time` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_shop_id` (`shop_id`),
+  KEY `idx_review_status` (`review_status`),
+  KEY `idx_attendance_status` (`attendance_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='CABAKURA Cast资料';

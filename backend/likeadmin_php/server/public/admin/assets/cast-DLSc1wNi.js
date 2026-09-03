@@ -1,0 +1,1 @@
+import{r}from"./index-T4BAPm_l.js";function e(a){return r.get({url:"/cabakura.cast/lists",params:a},{ignoreCancelToken:!0})}function s(a){return r.post({url:"/cabakura.cast/saveProfile",params:a})}export{e as g,s};

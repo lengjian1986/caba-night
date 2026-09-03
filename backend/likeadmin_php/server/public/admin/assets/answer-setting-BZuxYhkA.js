@@ -1,0 +1,1 @@
+import{r as e}from"./index-T4BAPm_l.js";function r(){return e.get({url:"/cabakura.answer_setting/fields"})}function n(t){return e.post({url:"/cabakura.answer_setting/saveOption",params:t})}function s(t){return e.post({url:"/cabakura.answer_setting/deleteOption",params:t})}export{s as d,r as g,n as s};

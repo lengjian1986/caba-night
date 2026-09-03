@@ -1,0 +1,1 @@
+import{r}from"./index-T4BAPm_l.js";function n(a){return r.get({url:"/cabakura.shop_manager/lists",params:a},{ignoreCancelToken:!0})}function t(a){return r.post({url:"/cabakura.shop_manager/save",params:a})}function u(a){return r.post({url:"/cabakura.shop_manager/delete",params:a})}export{u as d,n as g,t as s};

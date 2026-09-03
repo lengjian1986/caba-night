@@ -1,9 +1,23 @@
 .DS_Store
 *.log
+*.local
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!.env.*.example
+!**/.env.example
+!**/.env.*.example
 
 .venv/
 node_modules/
 vendor/
+.dart_tool/
+build/
+**/build/
+dist/
+**/dist/
 
 tmp/
 exports/
@@ -11,4 +25,5 @@ exports/
 backend/likeadmin_php/docker/mysql/
 backend/likeadmin_php/docker/redis/
 backend/likeadmin_php/server/runtime/
-
+backend/likeadmin_php/server/.env
+backend/likeadmin_php/admin/tsconfig.tsbuildinfo

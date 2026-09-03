@@ -1,0 +1,105 @@
+<template>
+    <template v-if="!route.meta?.hidden">
+        <app-link v-if="!hasShowChild" :to="`${routePath}?${queryStr}`">
+            <el-menu-item :index="routePath">
+                <icon
+                    class="menu-item-icon"
+                    :size="16"
+                    v-if="routeMeta?.icon"
+                    :name="routeMeta?.icon"
+                />
+                <span v-else class="menu-item-icon menu-item-icon-placeholder" aria-hidden="true" />
+                <template #title>
+                    <span>{{ t(routeMeta?.title, languageStore.language) }}</span>
+                </template>
+            </el-menu-item>
+        </app-link>
+        <el-sub-menu v-else :index="routePath" :popper-class="popperClass">
+            <template #title>
+                <icon
+                    class="menu-item-icon"
+                    :size="16"
+                    v-if="routeMeta?.icon"
+                    :name="routeMeta?.icon"
+                />
+                <span v-else class="menu-item-icon menu-item-icon-placeholder" aria-hidden="true" />
+                <span>{{ t(routeMeta?.title, languageStore.language) }}</span>
+            </template>
+            <menu-item
+                v-for="item in route?.children"
+                :key="resolvePath(item.path)"
+                :route="item"
+                :route-path="resolvePath(item.path)"
+                :popper-class="popperClass"
+            />
+        </el-sub-menu>
+    </template>
+</template>
+
+<script lang="ts" setup>
+import type { RouteRecordRaw } from 'vue-router'
+
+import { getNormalPath, objectToQuery } from '@/utils/util'
+import { isExternal } from '@/utils/validate'
+import useLanguageStore from '@/stores/modules/language'
+import { t } from '@/utils/i18n'
+
+interface Props {
+    route: RouteRecordRaw
+    routePath: string
+    popperClass: string
+}
+
+const props = defineProps<Props>()
+const languageStore = useLanguageStore()
+
+const hasShowChild = computed(() => {
+    const children: RouteRecordRaw[] = props.route.children ?? []
+    return !!children.filter((item) => !item.meta?.hidden).length
+})
+
+const routeMeta = computed(() => {
+    return props.route.meta
+})
+
+const resolvePath = (path: string) => {
+    if (isExternal(path)) {
+        return path
+    }
+    const newPath = getNormalPath(`${props.routePath}/${path}`)
+    return newPath
+}
+const queryStr = computed<string>(() => {
+    const query = props.route.meta?.query as string
+    try {
+        const queryObj = JSON.parse(query)
+        return objectToQuery(queryObj)
+    } catch (error) {
+        // console.log(error)
+
+        return query
+    }
+})
+</script>
+<style lang="scss" scoped>
+.el-menu-item,
+.el-sub-menu__title {
+        .menu-item-icon {
+            margin-right: 8px;
+            width: var(--el-menu-icon-width);
+            min-width: var(--el-menu-icon-width);
+            flex: 0 0 var(--el-menu-icon-width);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .menu-item-icon-placeholder {
+            display: inline-block;
+            height: 16px;
+            flex: 0 0 var(--el-menu-icon-width);
+        }
+}
+</style>

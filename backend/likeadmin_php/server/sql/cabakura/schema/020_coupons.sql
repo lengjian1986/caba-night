@@ -1,0 +1,50 @@
+SET NAMES utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `la_cbk_coupon` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(60) NOT NULL DEFAULT '' COMMENT 'クーポンコード',
+  `name` varchar(120) NOT NULL DEFAULT '' COMMENT 'クーポン名',
+  `description` varchar(500) NOT NULL DEFAULT '' COMMENT '説明',
+  `logo_image` varchar(500) NOT NULL DEFAULT '' COMMENT 'クーポンロゴ',
+  `discount_type` varchar(20) NOT NULL DEFAULT 'fixed' COMMENT 'fixed または percent',
+  `discount_value` int unsigned NOT NULL DEFAULT 0 COMMENT '割引額または割引率',
+  `min_amount` int unsigned NOT NULL DEFAULT 0 COMMENT '利用最低金額',
+  `max_discount` int unsigned NOT NULL DEFAULT 0 COMMENT '最大割引額',
+  `applicable_shop_ids` text COMMENT '適用店舗ID JSON',
+  `applicable_plan_ids` text COMMENT '適用セットプランID JSON',
+  `usage_limit` int unsigned NOT NULL DEFAULT 0 COMMENT '全体利用上限、0は無制限',
+  `used_count` int unsigned NOT NULL DEFAULT 0 COMMENT '利用回数',
+  `per_user_limit` int unsigned NOT NULL DEFAULT 1 COMMENT '会員ごとの利用上限',
+  `start_time` int unsigned NOT NULL DEFAULT 0 COMMENT '開始日時',
+  `end_time` int unsigned NOT NULL DEFAULT 0 COMMENT '終了日時',
+  `validity_days` int unsigned NOT NULL DEFAULT 30 COMMENT '取得後の有効日数',
+  `status` varchar(20) NOT NULL DEFAULT 'draft' COMMENT 'draft published expired disabled',
+  `sort` int unsigned NOT NULL DEFAULT 0 COMMENT '並び順',
+  `create_time` int unsigned NOT NULL DEFAULT 0,
+  `update_time` int unsigned NOT NULL DEFAULT 0,
+  `delete_time` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_code` (`code`),
+  KEY `idx_status` (`status`),
+  KEY `idx_time_range` (`start_time`,`end_time`),
+  KEY `idx_sort` (`sort`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='CABAKURA クーポン';
+
+CREATE TABLE IF NOT EXISTS `la_cbk_member_coupon` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `coupon_id` int unsigned NOT NULL DEFAULT 0 COMMENT 'クーポンID',
+  `user_id` int unsigned NOT NULL DEFAULT 0 COMMENT 'ユーザーID',
+  `coupon_code` varchar(60) NOT NULL DEFAULT '' COMMENT 'クーポンコードスナップショット',
+  `status` varchar(20) NOT NULL DEFAULT 'available' COMMENT 'available used expired revoked',
+  `received_time` int unsigned NOT NULL DEFAULT 0 COMMENT '取得日時',
+  `expire_time` int unsigned NOT NULL DEFAULT 0 COMMENT '有効期限',
+  `used_time` int unsigned NOT NULL DEFAULT 0 COMMENT '利用日時',
+  `used_order_id` int unsigned NOT NULL DEFAULT 0 COMMENT '利用注文ID',
+  `create_time` int unsigned NOT NULL DEFAULT 0,
+  `update_time` int unsigned NOT NULL DEFAULT 0,
+  `delete_time` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_coupon_user` (`coupon_id`,`user_id`),
+  KEY `idx_user_status` (`user_id`,`status`),
+  KEY `idx_used_order_id` (`used_order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='CABAKURA 会員クーポン';
