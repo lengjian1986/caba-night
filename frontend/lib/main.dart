@@ -262,6 +262,21 @@ void _returnToPreviousOrLogin(BuildContext context, [Object? result]) {
   );
 }
 
+void _returnToPreviousOrHome(BuildContext context) {
+  final navigator = Navigator.of(context);
+  if (navigator.canPop()) {
+    navigator.pop();
+    return;
+  }
+  navigator.pushReplacement(
+    PageRouteBuilder<void>(
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+      pageBuilder: (_, _, _) => HomePage(api: HomeApi()),
+    ),
+  );
+}
+
 void _openShopPage(BuildContext context, String area) {
   Navigator.of(context).pushReplacement(
     PageRouteBuilder<void>(
@@ -898,8 +913,23 @@ class _LoginPageState extends State<LoginPage> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final content = ListView(
-            padding: const EdgeInsets.fromLTRB(20, 30, 20, 28),
+            padding: const EdgeInsets.fromLTRB(12, 14, 20, 28),
             children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  tooltip: '戻る',
+                  onPressed: _isSubmitting
+                      ? null
+                      : () => _returnToPreviousOrHome(context),
+                  icon: const Icon(
+                    Icons.chevron_left_rounded,
+                    color: Color(0xFFF1D084),
+                    size: 30,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
               const Text(
                 'ログイン',
                 style: TextStyle(
